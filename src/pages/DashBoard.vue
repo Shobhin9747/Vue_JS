@@ -4,13 +4,40 @@
       <h2>Dashboard</h2>
     </div>
     <div class="nav-right">
-      <button
-        v-if="authStore.user?.username"
-        class="logout-button"
-        @click="handleLogout"
-      >
-        {{ authStore.user.username.charAt(0).toUpperCase() }}
-      </button>
+      <div class="relative">
+        <button
+          v-if="authStore.user?.username"
+          class="logout-button"
+          @click="togglePopover"
+        >
+          {{ authStore.user.username.charAt(0).toUpperCase() }}
+        </button>
+
+        <!-- Popover -->
+        <div
+          v-if="showPopover"
+          class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+        >
+          <!-- View Details Button -->
+          <button
+            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <span class="material-icons text-gray-500 text-base"
+              >visibility</span
+            >
+            View Details
+          </button>
+
+          <!-- Logout Button -->
+          <button
+            class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+            @click="handleLogout"
+          >
+            <span class="material-icons text-red-500 text-base">logout</span>
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="main-content">
@@ -64,6 +91,7 @@ const selectedRecipe = ref(null);
 const loading = ref(false);
 const dialog = ref(false);
 const dashboardBg = ref("#b5d3db");
+const showPopover = ref(false);
 
 function handleLogout() {
   authStore.logout();
@@ -85,6 +113,10 @@ onMounted(async () => {
 function confirm(recipe) {
   selectedRecipe.value = recipe;
   dialog.value = true;
+}
+
+function togglePopover() {
+  showPopover.value = !showPopover.value;
 }
 </script>
 
@@ -164,5 +196,9 @@ h1 {
   padding-top: 80px;
   border-radius: 8px;
   overflow-y: auto;
+}
+.relative {
+  position: relative;
+  z-index: 10;
 }
 </style>
